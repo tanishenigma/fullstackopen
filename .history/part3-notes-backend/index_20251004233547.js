@@ -1,6 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
-let persons = require("./data.js");
+const persons = require("./data.js");
 require("dotenv").config();
 
 const app = express();

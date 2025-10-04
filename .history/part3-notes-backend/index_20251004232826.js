@@ -1,25 +1,17 @@
 const express = require("express");
 const morgan = require("morgan");
-let persons = require("./data.js");
+const persons = require("./data.js");
 require("dotenv").config();
 
 const app = express();
 
 const PORT = process.env.PORT;
-const baseURL = `http://localhost:${PORT}/`;
-
-const date = new Date();
-const generateId = () => {
-  const maxId =
-    persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
-  return String(maxId + 1);
-};
+const baseURL = "http://localhost:3001/";
 
 app.use(express.json());
-morgan.token("body", (req) => JSON.stringify(req.body));
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
-);
+app.use(morgan("dev"));
+
+
 app.get("/", (_, res) => {
   res.send(persons);
 });

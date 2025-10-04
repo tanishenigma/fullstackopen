@@ -1,25 +1,21 @@
 const express = require("express");
 const morgan = require("morgan");
-let persons = require("./data.js");
-require("dotenv").config();
 
 const app = express();
 
-const PORT = process.env.PORT;
-const baseURL = `http://localhost:${PORT}/`;
+app.use(express.json());
+app.use(morgan("dev"));
 
 const date = new Date();
+
+const PORT = 3001;
+
 const generateId = () => {
   const maxId =
     persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
   return String(maxId + 1);
 };
 
-app.use(express.json());
-morgan.token("body", (req) => JSON.stringify(req.body));
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
-);
 app.get("/", (_, res) => {
   res.send(persons);
 });
@@ -76,5 +72,4 @@ app.use(unknownEndPoint);
 
 app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
-  console.log(`Click Here 👉️ ${baseURL}`);
 });

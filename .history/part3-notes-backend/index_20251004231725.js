@@ -1,25 +1,49 @@
 const express = require("express");
-const morgan = require("morgan");
-let persons = require("./data.js");
-require("dotenv").config();
-
 const app = express();
-
-const PORT = process.env.PORT;
-const baseURL = `http://localhost:${PORT}/`;
+app.use(express.json());
 
 const date = new Date();
+let persons = [
+  {
+    id: "1",
+    name: "Michael",
+    phone: "9876543210",
+    important: true,
+  },
+  {
+    id: "2",
+    name: "Sophia",
+    phone: "8765432109",
+    important: false,
+  },
+  {
+    id: "3",
+    name: "Arjun",
+    phone: "7654321098",
+    important: false,
+  },
+  {
+    id: "4",
+    name: "Liam",
+    phone: "6543210987",
+    important: true,
+  },
+  {
+    id: "5",
+    name: "Olivia",
+    phone: "5432109876",
+    important: false,
+  },
+];
+
+const PORT = 3001;
+
 const generateId = () => {
   const maxId =
     persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
   return String(maxId + 1);
 };
 
-app.use(express.json());
-morgan.token("body", (req) => JSON.stringify(req.body));
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
-);
 app.get("/", (_, res) => {
   res.send(persons);
 });
@@ -76,5 +100,4 @@ app.use(unknownEndPoint);
 
 app.listen(PORT, () => {
   console.log(`Server Running on Port ${PORT}`);
-  console.log(`Click Here 👉️ ${baseURL}`);
 });

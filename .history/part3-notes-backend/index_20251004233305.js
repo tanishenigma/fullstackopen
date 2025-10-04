@@ -1,12 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
-let persons = require("./data.js");
+const persons = require("./data.js");
 require("dotenv").config();
 
 const app = express();
 
 const PORT = process.env.PORT;
-const baseURL = `http://localhost:${PORT}/`;
+const baseURL = "http://localhost:3001/";
 
 const date = new Date();
 const generateId = () => {
@@ -17,9 +17,7 @@ const generateId = () => {
 
 app.use(express.json());
 morgan.token("body", (req) => JSON.stringify(req.body));
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
-);
+
 app.get("/", (_, res) => {
   res.send(persons);
 });
