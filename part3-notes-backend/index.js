@@ -1,7 +1,9 @@
 const express = require("express");
 const app = express();
+app.use(express.json());
 
-let notes = [
+const date = new Date();
+let persons = [
   {
     id: "1",
     name: "Michael",
@@ -35,24 +37,62 @@ let notes = [
 ];
 
 const PORT = 3001;
-app.get("/", (req, res) => {
-  res.send(notes);
+
+const generateId = () => {
+  const maxId =
+    persons.length > 0 ? Math.max(...persons.map((n) => Number(n.id))) : 0;
+  return String(maxId + 1);
+};
+
+app.get("/", (_, res) => {
+  res.send(persons);
 });
 
-app.get("/api/notes/:id", (req, res) => {
+app.get("/info", (_, res) => {
+  res.send(
+    `<h3>Phonebook has info for ${persons.length} people</h3><h3>${date}</h3>`
+  );
+});
+
+app.get("/api/persons/:id", (req, res) => {
   const id = req.params.id;
-  const note = notes.find((note) => note.id === id);
-  if (note) {
-    res.send(note);
+  const person = persons.find((person) => person.id === id);
+  if (person) {
+    res.send(person);
   } else {
     res.status(404).end();
   }
 });
 
-app.delete("/api/notes/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id;
-  notes = notes.filter((note) => note.id !== id);
+  persons = persons.filter((person) => person.id !== id);
   res.status(204).end();
+});
+
+app.post("/api/persons", (req, res) => {
+  const { name, phone, important } = req.body;
+
+  if (!name || !phone) {
+    return res.status(400).json({ error: "The name or number is missing" });
+  }
+
+  const exists = persons.some((p) => p.name === name);
+  if (exists) {
+    return res
+      .status(400)
+      .json({ error: "The name already exists in the phonebook" });
+  }
+
+  const person = {
+    id: generateId(),
+    name,
+    phone,
+    important: important || false,
+  };
+
+  persons = persons.concat(person);
+  res.status(201).json(person);
 });
 
 app.listen(PORT, () => {
