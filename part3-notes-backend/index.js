@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const app = express();
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001;
 const baseURL = `http://localhost:${PORT}/`;
 
 const date = new Date();
@@ -22,6 +22,7 @@ app.use(cors());
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
+app.use(express.static("dist"));
 
 app.get("/", (_, res) => {
   res.send(persons);
@@ -57,7 +58,7 @@ app.put("/api/persons/:id", (req, res) => {
     return res.status(404).json({ error: "person not found" });
   }
 
-  const updatedPerson = { ...person, ...body }; // merges new fields
+  const updatedPerson = { ...person, ...body };
   persons = persons.map((p) => (p.id === id ? updatedPerson : p));
 
   res.json(updatedPerson);
