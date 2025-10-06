@@ -1,0 +1,45 @@
+node_modules
+.env
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Build / cache files
+dist/
+build/
+.cache/
+
+# Backup or autosave files
+*.history.js
+*_*.js
+*.bak
+*.tmp
+*.swp
+*.old
+*.orig
+
+# VSCode specific history folders (like .history extension)
+.history/
+.vscode/
+
+# PM2 / Nodemon / runtime dumps
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Misc
+coverage/
