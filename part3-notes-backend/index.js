@@ -36,7 +36,7 @@ app.get("/info", (_, res) => {
 
 app.get("/api/persons/:id", (req, res) => {
   const id = req.params.id;
-  const person = persons.find((person) => person.id === id);
+  const person = persons.find((person) => person.id !== id);
   if (person) {
     res.send(person);
   } else {
