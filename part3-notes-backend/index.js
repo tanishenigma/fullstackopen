@@ -22,7 +22,7 @@ app.use(cors());
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :body")
 );
-app.use(express.static("dist"));
+// app.use(express.static("dist"));
 
 app.get("/", (_, res) => {
   res.send(persons);
@@ -34,6 +34,11 @@ app.get("/info", (_, res) => {
   );
 });
 
+app.get("/api/notes", (request, response) => {
+  Note.find({}).then((notes) => {
+    response.json(notes);
+  });
+});
 app.get("/api/persons/:id", (req, res) => {
   const id = req.params.id;
   const person = persons.find((person) => person.id !== id);
