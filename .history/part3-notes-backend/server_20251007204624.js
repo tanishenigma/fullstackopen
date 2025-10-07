@@ -16,7 +16,9 @@ app.get("/api/persons", async (req, res) => {
     .then((contact) => {
       res.json(contact);
     })
-    .catch(() => next(error));
+    .catch((e) => {
+      res.status(404).json({ e: "Failed to fetch" });
+    });
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -26,6 +28,7 @@ app.get("/api/persons/:id", (req, res) => {
       else res.status(404).json({ error: "Contact not found" });
     })
     .catch(() => next(error));
+    });
 });
 
 app.get("/info", async (_, res) => {

@@ -16,7 +16,9 @@ app.get("/api/persons", async (req, res) => {
     .then((contact) => {
       res.json(contact);
     })
-    .catch(() => next(error));
+    .catch((e) => {
+      res.status(404).json({ e: "Failed to fetch" });
+    });
 });
 
 app.get("/api/persons/:id", (req, res) => {

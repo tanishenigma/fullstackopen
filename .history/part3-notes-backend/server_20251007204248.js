@@ -16,7 +16,9 @@ app.get("/api/persons", async (req, res) => {
     .then((contact) => {
       res.json(contact);
     })
-    .catch(() => next(error));
+    .catch((e) => {
+      res.status(404).json({ e: "Failed to fetch" });
+    });
 });
 
 app.get("/api/persons/:id", (req, res) => {
@@ -25,7 +27,9 @@ app.get("/api/persons/:id", (req, res) => {
       if (contact) res.json(contact);
       else res.status(404).json({ error: "Contact not found" });
     })
-    .catch(() => next(error));
+    .catch((error) => {
+      res.status(400).json({ error: "Invalid ID format" });
+    });
 });
 
 app.get("/info", async (_, res) => {
@@ -35,13 +39,17 @@ app.get("/info", async (_, res) => {
         `<h3>Phonebook has info for ${persons.length} people</h3><h3>${date}</h3>`
       )
     )
-    .catch(() => next(error));
+    .catch(() => {
+      res.status(500).send("An error occurred while fetching data.");
+    });
 });
 
 app.delete("/api/persons/:id", (req, res) => {
   Phonebook.findByIdAndDelete(req.params.id)
     .then(() => res.status(204).end())
-    .catch(() => next(error));
+    .catch(() =>
+      res.status(400).json({ error: "Invalid ID or deletion failed" })
+    );
 });
 
 app.put("/api/persons/:id", (req, res) => {
@@ -53,7 +61,7 @@ app.put("/api/persons/:id", (req, res) => {
     { new: true, runValidators: true }
   )
     .then((updated) => res.json(updated))
-    .catch(() => next(error));
+    .catch(() => res.status(400).json({ error: "Update failed" }));
 });
 
 app.post("/api/persons", (req, res) => {
@@ -69,23 +77,16 @@ app.post("/api/persons", (req, res) => {
     .then((savedEntry) => {
       res.status(201).json(savedEntry);
     })
-    .catch((error) => next(error));
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
 });
 
-const unknownEndpoint = (req, res) => {
-  res.status(404).json({ error: "unknown endpoint" });
-};
-app.use(unknownEndpoint);
-
-const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
-  if (error.name === "CastError") {
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message);
+  if (error.name == "CastError") {
     return res.status(400).json({ error: "malfromatted id" });
-  } else if (error.name === "ValidationError") {
-    return res.status(400).json({ error: error.message });
-  }
-
-  res.status(500).json({ error: "Something went wrong with the server!" });
+  } else if(err.name==)
 };
 
 app.use(errorHandler);
