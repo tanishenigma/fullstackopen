@@ -5,13 +5,13 @@ const Phonebook = require("./models/person");
 dotenv.config();
 const app = express();
 app.use(express.json());
-app.use(express.static("dist"));
-console.log;
+// app.use(express.static("dist"));
+
 const PORT = process.env.PORT || 3001;
 const baseURL = `http://localhost:${PORT}/`;
 const date = new Date();
 
-app.get("/api/persons", async (req, res) => {
+app.get("/api/persons", async (req, res, next) => {
   Phonebook.find({})
     .then((contact) => {
       res.json(contact);
@@ -19,7 +19,7 @@ app.get("/api/persons", async (req, res) => {
     .catch(() => next(error));
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   Phonebook.findById(req.params.id)
     .then((contact) => {
       if (contact) res.json(contact);
@@ -28,7 +28,7 @@ app.get("/api/persons/:id", (req, res) => {
     .catch(() => next(error));
 });
 
-app.get("/info", async (_, res) => {
+app.get("/info", async (_, res, next) => {
   Person.find({})
     .then(() =>
       res.send(
@@ -38,7 +38,7 @@ app.get("/info", async (_, res) => {
     .catch(() => next(error));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   Phonebook.findByIdAndDelete(req.params.id)
     .then(() => res.status(204).end())
     .catch(() => next(error));
@@ -56,7 +56,7 @@ app.put("/api/persons/:id", (req, res) => {
     .catch(() => next(error));
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const { name, phone } = req.body;
   const entry = new Phonebook({
     name,
